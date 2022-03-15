@@ -14,7 +14,7 @@ const bodyParser = require('body-parser');
 
 
 //db
-const connect = require('./services/db');
+const connect = require('./config/db');
 
 //controllers
 const eventController = require('./controllers/eventController');
@@ -24,8 +24,11 @@ async function bootServer() {
     app.use(bodyParser.json());
     //db
     connect();
+
+    
     //register the controllers
     app.use('/eventResource', eventController);
+    
 
     //listen
     app.listen(port, () => {
@@ -37,8 +40,6 @@ async function bootServer() {
   }
 }
 
-function registerControllers() {
 
-}
  
 module.exports = {bootServer};

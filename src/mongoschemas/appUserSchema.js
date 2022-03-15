@@ -13,7 +13,8 @@ const userSchema = mongoose.Schema( {
     },
     email: {
         type: String,
-        required: 'this feild is required'
+        required: 'this feild is required',
+        unique:  true
     },
     password: {
       type: String,
