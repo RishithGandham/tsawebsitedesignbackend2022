@@ -5,9 +5,8 @@ const Event = mongoose.model('Event')
 
 
 // get all events
-router.get('/', async (req, res) => {
+router.get('/getAll', async (req, res) => {
     const events = await Event.find();
-    console.log('events retrieved:', events );
     res.send(events);
 })
 
@@ -26,6 +25,14 @@ router.post('/createevent', (req, res) => {
             res.status(200).send(doc);
         }
     })
+})
+
+
+//get an event by id
+router.get('/get/:id', (req, res) => {
+  Event.findById(req.params.id, (err, doc) => {
+    err ? res.status(500).send('An error occured') : res.status(200).send(doc);
+  })
 })
 
 

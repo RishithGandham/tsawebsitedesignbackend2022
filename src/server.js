@@ -4,6 +4,7 @@ const dotenv = require('dotenv').config()
 
 //register schemas 
 Events = require('./mongoschemas/eventSchema')
+AppUser = require('./mongoschemas/appUserSchema')
 
 //express
 const express = require('express')
@@ -25,7 +26,7 @@ async function bootServer() {
     connect();
     //register the controllers
     app.use('/eventResource', eventController);
-    
+
     //listen
     app.listen(port, () => {
       console.log('app listening on port:', 5000);
