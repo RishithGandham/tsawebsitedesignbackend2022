@@ -28,7 +28,7 @@ async function bootServer() {
         app.use('/userResource', userController);
 
         app.get('/', (req, res) => {
-            res.send('aditya so bad he says sus stuff');
+            res.send('welcome to the API!');
         });
 
         //listen
