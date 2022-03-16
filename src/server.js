@@ -32,7 +32,7 @@ async function bootServer() {
         })
 
         //listen
-        app.listen(port, () => {
+        app.listen(process.env.PORT, () => {
             console.log('app listening on port:', 5000);
         });
     } catch (error) {
