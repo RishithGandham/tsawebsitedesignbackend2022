@@ -27,6 +27,10 @@ async function bootServer() {
         app.use('/eventResource', eventController);
         app.use('/userResource', userController);
 
+        app.get('/', (req,  res) => {
+          res.send('welcome to the api!');
+        })
+
         //listen
         app.listen(port, () => {
             console.log('app listening on port:', 5000);
