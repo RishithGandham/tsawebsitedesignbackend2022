@@ -1,15 +1,17 @@
-const  mongoose = require("mongoose")
+const mongoose = require('mongoose');
 require('dotenv').config;
+const DB_URI = process.env.DB_URI || process.env['DB_URI'];
 
 async function connect() {
-    await mongoose.connect('mongodb+srv://websitedesigndatabase:pass@cluster0.rmf4t.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
-      .then(() => {
-      console.log("connected to database");
-    }).catch((err) => {
-        console.log('Error connecting to database.')
-        console.error(err);
-    });
-
+    await mongoose
+        .connect(DB_URI)
+        .then(() => {
+            console.log('connected to database');
+        })
+        .catch((err) => {
+            console.log('Error connecting to database.');
+            console.error(err);
+        });
 }
 
 module.exports = connect;
