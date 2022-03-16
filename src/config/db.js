@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 require('dotenv').config;
-const DB_URI = 'mongodb+srv://websitedesigndatabase:pass@cluster0.rmf4t.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+const DB_URI =
+    'mongodb+srv://websitedesigndatabase:pass@cluster0.rmf4t.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
 
 async function connect() {
     await mongoose

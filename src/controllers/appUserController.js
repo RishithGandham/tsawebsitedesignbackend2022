@@ -19,7 +19,6 @@ router.post('/login', async (req, res) => {
         //get the user
         const appuser = AppUser.find({ email });
 
-
         //unencrypt the password in db and compare both
         if (user && (await bcrypt.compare(password, user.password))) {
             const token = jwt.sign(
@@ -33,12 +32,12 @@ router.post('/login', async (req, res) => {
             res.status(200).json({
                 appuser: user,
                 jwt: token,
-        });
-        res.status(400).send('invalid credentials');
+            });
+            res.status(400).send('invalid credentials');
         }
-    } catch(error) {
+    } catch (error) {
         res.status(400).send('Invalid Credentials');
-        console.log(error)
+        console.log(error);
     }
 });
 
@@ -50,7 +49,9 @@ router.post('/register', async (req, res) => {
             ? res.status(400).send('All input required')
             : null;
         const isUserExists = await AppUser.exists({ sanitizedEmail });
-        isUserExists ? res.status(409).send('This user with this email already exists') : null;
+        isUserExists
+            ? res.status(409).send('This user with this email already exists')
+            : null;
 
         // hash the pass
         encryptedPass = await bcrypt.hash(password, 10);
@@ -76,15 +77,16 @@ router.post('/register', async (req, res) => {
             jwt: token,
             user: user,
         });
-    } catch(error) {
+    } catch (error) {
         res.send('error saving user');
         console.log(error);
     }
 });
 
-router.post('/update', (req, res) => {});
+router.post('/update', (req, res) => {
+
+});
 
 router.get('/superPrivateResource', (req, res) => {});
-
 
 module.exports = router;

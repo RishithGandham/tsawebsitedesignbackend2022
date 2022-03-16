@@ -27,9 +27,9 @@ async function bootServer() {
         app.use('/eventResource', eventController);
         app.use('/userResource', userController);
 
-        app.get('/', (req,  res) => {
-          res.send('welcome to the api!');
-        })
+        app.get('/', (req, res) => {
+            res.send('aditya so bad he says sus stuff');
+        });
 
         //listen
         app.listen(process.env.PORT, () => {
