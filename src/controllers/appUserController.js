@@ -7,6 +7,9 @@ const AppUser = mongoose.model('AppUser');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
+//middle ware
+const jwtmiddleware = require('../middleware/jwtMiddleWare');
+
 router.post('/login', async (req, res) => {
    try {
     // Get user input
@@ -94,9 +97,9 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/update', (req, res) => {
-
+      
 });
 
-router.get('/superPrivateResource', (req, res) => {});
+router.get('/superPrivateResource', jwtmiddleware,  (req, res) => {});
 
 module.exports = router;
