@@ -133,5 +133,4 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-
-/heroku
+heroku/
