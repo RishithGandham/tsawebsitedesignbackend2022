@@ -21,7 +21,7 @@ router.post('/login', async (req, res) => {
 
         // Validate user input
         if (!(email && password)) {
-            return res.status(400).send('All input is required');
+            return res.status(400).send('All  input is required');
         }
         // Validate if user exist in our database
         const user = await AppUser.findOne({ email });
@@ -35,7 +35,7 @@ router.post('/login', async (req, res) => {
                     expiresIn: '15d',
                 }
             );
-
+        
             // user
             return res.status(200).json({
                 jwt: token,
