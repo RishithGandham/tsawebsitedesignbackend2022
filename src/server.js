@@ -33,7 +33,7 @@ async function bootServer() {
 
         //listen
         app.listen(port, () => {
-            console.log('app listening on port:', 5000);
+            console.log('app listening on port:', port);
         });
     } catch (error) {
         console.error(error);
