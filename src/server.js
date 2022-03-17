@@ -7,7 +7,7 @@ AppUser = require('./mongoschemas/appUserSchema');
 //express
 const express = require('express');
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 const bodyParser = require('body-parser');
 
 //db
@@ -32,7 +32,7 @@ async function bootServer() {
         });
 
         //listen
-        app.listen(process.env.PORT, () => {
+        app.listen(port, () => {
             console.log('app listening on port:', 5000);
         });
     } catch (error) {
