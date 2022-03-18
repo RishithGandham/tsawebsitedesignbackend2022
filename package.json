@@ -6,7 +6,8 @@
     "scripts": {
         "start": "node src/index.js",
         "test": "test",
-        "pretty": "npx prettier --write ."
+        "pretty": "npx prettier --write .",
+        "start:dev": "nodemon src -L"
     },
     "repository": {
         "type": "git",
