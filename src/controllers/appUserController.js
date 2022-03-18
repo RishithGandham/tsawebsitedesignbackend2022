@@ -12,7 +12,8 @@ const mongoose = require('mongoose');
 const AppUser = mongoose.model('AppUser');
 
 //middle ware
-const jwtmiddleware = require('../middleware/jwtMiddleWare');
+const jwtmiddleware = require('../auth/jwtMiddleWare');
+const getAppUserFromReq = require('../auth/getAppUserFromJWT');
 
 router.post('/login', async (req, res) => {
     try {
@@ -35,7 +36,7 @@ router.post('/login', async (req, res) => {
                     expiresIn: '15d',
                 }
             );
-        
+
             // user
             return res.status(200).json({
                 jwt: token,
@@ -96,10 +97,24 @@ router.post('/register', async (req, res) => {
     }
 });
 
-router.post('/update', (req, res) => {});
+router.get('/userdetails', jwtmiddleware, async (req, res) => {
+    const appUser = await getAppUserFromReq(req);
+    return res.status(200).json({
+        user: appUser,
+    });
+});
 
-router.get('/superPrivateResource', jwtmiddleware, (req, res) => {
-    res.send('hacked into the main frame >:)');
+router.post('/update', async (req, res) => {
+    const appUser = await getAppUserFromReq(req);
+    AppUser.findOneAndUpdate(
+        { _id: req.body._id },
+        { ...req.body },
+        (doc, err) => {
+            err
+                ? res.status(400).send('An error occured')
+                : res.status(200).json(doc);
+        }
+    );
 });
 
 module.exports = router;
