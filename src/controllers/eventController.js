@@ -1,7 +1,13 @@
+//express
 const express = require('express');
-const mongoose = require('mongoose');
 const router = express.Router();
+
+//mongoose
+const mongoose = require('mongoose');
 const Event = mongoose.model('Event');
+
+//jwt
+const jwtMiddleWare = require('../auth/jwtMiddleWare');
 
 // get all events
 router.get('/getAll', async (req, res) => {

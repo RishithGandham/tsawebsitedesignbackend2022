@@ -17,6 +17,10 @@ const eventSchema = mongoose.Schema({
         type: Number,
         required: 'this feild is required',
     },
+    app_user_id: {
+        type: String,
+        required: 'this feild is required',
+    },
 });
 
 module.exports = mongoose.model('Event', eventSchema);
