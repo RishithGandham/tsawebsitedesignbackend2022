@@ -18,6 +18,11 @@ const userSchema = mongoose.Schema({
         type: String,
         required: 'this feild is required',
     },
+    admin: {
+        type: Boolean,
+        required: 'this feild is required',
+        default: false,
+    },
     subscribedEvents: [{ id: String }],
     createdEvents: [{ id: String }],
 });

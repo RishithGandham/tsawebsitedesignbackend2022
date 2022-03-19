@@ -14,6 +14,7 @@ const AppUser = mongoose.model('AppUser');
 //middle ware
 const jwtmiddleware = require('../auth/jwtMiddleWare');
 const getAppUserFromReq = require('../auth/getAppUserFromJWT');
+const checkIfAdmin = require('../auth/adminRoleMiddleWare');
 
 router.post('/login', async (req, res) => {
     try {
@@ -54,8 +55,6 @@ router.post('/register', async (req, res) => {
     try {
         const { firstName, lastName, email, password } = req.body;
 
-        console.log(req.body);
-
         if (!(email && password && firstName && lastName)) {
             return res.status(400).send('All input is required');
         }
@@ -75,6 +74,7 @@ router.post('/register', async (req, res) => {
             lastName,
             email: email, // sanitize: convert email to lowercase
             password: encryptedPassword,
+            admin: false,
         });
 
         // Create token
@@ -104,17 +104,20 @@ router.get('/userdetails', jwtmiddleware, async (req, res) => {
     });
 });
 
-router.post('/update', async (req, res) => {
-    const appUser = await getAppUserFromReq(req);
+router.post('/update', jwtmiddleware, checkIfAdmin, async (req, res) => {
     AppUser.findOneAndUpdate(
         { _id: req.body._id },
         { ...req.body },
-        (doc, err) => {
-            err
-                ? res.status(400).send('An error occured')
-                : res.status(200).json(doc);
-        }
-    );
+        { new: true }
+    )
+        .then((user) => {
+            console.log(user);
+            res.status(200).json(user);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.status(400).send('Error updating user');
+        });
 });
 
 module.exports = router;

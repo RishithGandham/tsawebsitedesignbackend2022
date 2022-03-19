@@ -10,6 +10,7 @@ const getAppUserFromReq = async function (req, res) {
         });
         return await AppUser.findById(decoded.payload.user_id);
     } catch (error) {
+        console.log(error);
         return;
     }
 };
