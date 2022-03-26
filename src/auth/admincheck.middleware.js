@@ -1,4 +1,4 @@
-const getAppUserFromReq = require('./getAppUserFromJWT');
+const getAppUserFromReq = require('./getappuser.middleware');
 
 const checkIfAdmin = async (req, res, next) => {
     const appUser = await getAppUserFromReq(req);

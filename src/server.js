@@ -1,8 +1,8 @@
 const dotenv = require('dotenv').config();
 
 //register schemas
-Events = require('./mongoschemas/eventSchema');
-AppUser = require('./mongoschemas/appUserSchema');
+Events = require('./mongoschemas/event.schema.js');
+AppUser = require('./mongoschemas/appuser.schema.js');
 
 //express
 const express = require('express');
@@ -11,11 +11,11 @@ const port = process.env.PORT || 5000;
 const bodyParser = require('body-parser');
 
 //db
-const connect = require('./config/db');
+const connect = require('./config/database.config.js');
 
 //controllers
-const eventController = require('./controllers/eventController');
-const userController = require('./controllers/appUserController');
+const eventController = require('./controllers/event.controller.js');
+const userController = require('./controllers/appuser.controller.js');
 
 async function bootServer() {
     try {
