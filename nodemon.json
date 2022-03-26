@@ -1,5 +1,4 @@
 {
-    "watch": ["src"],
-    "ignore": ["Procfile", "*.png", ".env"],
-    "delay": "3"
+    "watch": ["src "],
+    "ignore": ["node_modules", "dist", "build", "*.schema.js", "src/config/**"]
 }
