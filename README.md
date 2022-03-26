@@ -2,7 +2,7 @@
 
 ## Database
 
-The database is an AWS hosted mongoDB. The backend connects to the DB through mongoose. Chose mongoose for ease of use creating schemas and models. The database is storing AppUser and CuturalEvents (Documents/Collections)
+The database is an AWS hosted mongoDB. The backend connects to the DB through mongoose. Chose mongoose for ease of use creating schemas and models. The database is storing AppUser and CuturalEvents Documents/Collections
 
 ## API
 
