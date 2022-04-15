@@ -3,6 +3,7 @@ const dotenv = require('dotenv').config();
 //register schemas
 Events = require('./mongoschemas/event.schema.js');
 AppUser = require('./mongoschemas/appuser.schema.js');
+const cors = require('cors');
 
 //express
 const express = require('express');
@@ -16,9 +17,11 @@ const connect = require('./config/database.config.js');
 //controllers
 const eventController = require('./controllers/event.controller.js');
 const userController = require('./controllers/appuser.controller.js');
+const authController = require('./controllers/auth.controller.js');
 
 async function bootServer() {
     try {
+        app.use(cors());
         app.use(bodyParser.json());
         //db
         connect();
@@ -26,7 +29,7 @@ async function bootServer() {
         //register the controllers
         app.use('/eventResource', eventController);
         app.use('/userResource', userController);
-
+        app.use('/authResource', authController);
         app.get('/', (req, res) => {
             res.send('welcome to the API!');
         });

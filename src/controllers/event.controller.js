@@ -36,13 +36,16 @@ router.post('/createevent', jwtMiddleWare, checkIfAdmin, (req, res) => {
     event.maxTickets = req.body.maxTickets;
     event.ticketsSold = 0;
     event.date = req.body.date;
+    event.img_url = req.body.img_url;
+    event.description = req.body.description;
     event.save((err, doc) => {
         if (err) {
+            console.log(err);
             res.status(500).send('Error occured while creating the event');
         } else {
             res.status(200).send(doc);
         }
-    });
+    }); 
 });
 
 //update an event
