@@ -23,7 +23,8 @@ const userSchema = mongoose.Schema({
         required: 'this feild is required',
         default: false,
     },
-    subscribedEvents: [{ id: String }],
+    statistics: {quizzesAttempted: Number, eventsRegistered: Number, averageQuizScore: Number},
+    subscribedEvents: [{id: String}]
 });
 
 module.exports = mongoose.model('AppUser', userSchema);

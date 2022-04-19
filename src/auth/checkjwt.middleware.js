@@ -20,8 +20,17 @@ const verifyToken = async (req, res, next) => {
         const decoded = jwt.verify(token, process.env.TOKEN_KEY,  {
             complete: true
         });
-        console.log(decoded)
-        req.user = await AppUser.findById(decoded.payload.user_id);
+        console.log(decoded);
+        // use the user id to get the  user from the database and return an error if the user does not exist
+        const user = await AppUser.findById(decoded.payload.user_id);
+        console.log(user);
+        if (!user) {
+            
+            return res.status(403).send('Invalid token');
+        }
+        
+        req.user = user;
+        
 
     } catch (err) {
         console.log(err)

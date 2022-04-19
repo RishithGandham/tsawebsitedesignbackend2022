@@ -23,6 +23,8 @@ async function bootServer() {
     try {
         app.use(cors());
         app.use(bodyParser.json());
+        //assets
+        app.use('/assets', express.static('assets'));
         //db
         connect();
 

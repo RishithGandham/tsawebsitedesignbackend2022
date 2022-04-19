@@ -25,12 +25,11 @@ const validateEmail = (email) => {
 
 router.post('/login', async (req, res) => {
     try {
-
         
         // Get user input
         const { email, password } = req.body;
 
-        if (!valiidateEmail(email)) return res.status(400).send('Invalid email');
+        if (!validateEmail(email)) return res.status(400).send('Invalid email');
         
 
 
@@ -90,7 +89,9 @@ router.post('/register', async (req, res) => {
             lastName,
             email: email, // sanitize: convert email to lowercase
             password: encryptedPassword,
+            statistics: {eventsViewed: 0, quizzesAttempted: 0, averageQuizScore: 0},
             admin: false,
+            subscribedEvents: []
         });
 
         // Create token
@@ -120,10 +121,28 @@ router.get('/userdetails', jwtmiddleware, async (req, res) => {
     });
 });
 
-router.post('/update', jwtmiddleware, checkIfAdmin, async (req, res) => {
-    AppUser.findOneAndUpdate(
-        { _id: req.body._id },
-        { ...req.body },
+//update a user taking in a token so that only the user can update their own profile
+router.post('/update/', jwtmiddleware, getAppUserFromReq, async (req, res) => {
+    const { firstName, lastName, password } = req.body;
+
+    if (!validateEmail(email)) return res.status(400).send('Invalid email');
+    if (password.length < 8) return res.status(400).send('Password must be at least 8 characters');
+    
+    if (!(email && password && firstName && lastName)) {
+        return res.status(400).send('All input is required');
+    }
+
+    const oldUser = await AppUser.findOne({ email });
+
+    if(!oldUser) return res.status(400).send('User does not exist');
+
+    //Encrypt user password
+    encryptedPassword = await bcrypt.hash(password, 10);
+
+    // update user in database
+    const user = await AppUser.findOneAndUpdate(
+        { _id: req.user._id },
+        { firstName, lastName, password: encryptedPassword },
         { new: true }
     )
         .then((user) => {
@@ -135,6 +154,24 @@ router.post('/update', jwtmiddleware, checkIfAdmin, async (req, res) => {
             res.status(400).send('Error updating user');
         });
 });
+
+// get the users statistics
+router.get('/statistics', jwtmiddleware, getAppUserFromReq,  (req, res) => {
+    try {
+        console.log(req.user)
+        const { statistics } = req.user;
+        return res.status(200).json({
+            statistics,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Error getting statistics')
+    }
+    
+});
+
+
+
 
 
 

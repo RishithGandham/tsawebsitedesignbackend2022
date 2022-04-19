@@ -5,19 +5,6 @@ const eventSchema = mongoose.Schema({
         type: String,
         required: 'this feild is required',
     },
-    date: {
-        type: String,
-        required: 'this feild is required',
-    },
-    maxTickets: {
-        type: Number,
-        required: 'this feild is required',
-    },
-    ticketsSold: {
-        type: Number,
-        required: 'this feild is required',
-        default:0
-    },
     description: {
         type: String,
         required: 'this feild is required',
@@ -26,6 +13,18 @@ const eventSchema = mongoose.Schema({
         type: String,
         required: 'this feild is required',
     },
+    
+    quiz: [{question: String, answer: String}],
+    registeredUsers: {
+        type: Number,
+        required: 'this feild is required', 
+        default: 0
+    },
+    date: {
+        type: Date,
+        required: 'this feild is required',
+    }
+
 });
 
 module.exports = mongoose.model('Event', eventSchema);

@@ -12,29 +12,70 @@ const jwtMiddleWare = require('../auth/checkjwt.middleware');
 const getAppUserFromReq = require('../auth/getappuser.middleware');
 
 // get all events
-router.get('/getAll', jwtMiddleWare, async (req, res) => {
+router.get('/getAll',  async (req, res) => {
     const events = await Event.find();
-    res.send(events);
+    res.status(200).json({
+        events: events
+    });
 });
 
 
 //get an event by id
-router.get('/getById/:id', jwtMiddleWare, async (req, res) => {
-    const event = await Event.findById(req.params.id, (err, event) => {
-        if (err) { 
-            res.status(400).send(err);
-        } else {
-            res.send(event);
-        }
-    });
+router.post('/getById/', jwtMiddleWare, async (req, res) => {
+    let event;
+    try {
+        const eventFetch = await Event.findById(req.body.id)
+        .then(event1 => {
+            event = event1
+        }).catch((err) => {
+            res.status(400).send('Could not find event');
+            console.log('helloadfs')
+            throw err;
+        });
+        return res.status(200).send({
+            event: event
+        })
+    } catch(err) {
+       console.log(err)
+    }
+    
 });
 
+//return all events for a user with the actual data instead of the id
+router.get('/getAllForUser', jwtMiddleWare, async (req, res) => {
+    
+    async function getEvents() {
+        let events = [];
+        for (let i = 0; i < req.user.subscribedEvents.length; i++) {
+            const event = await Event.findById(req.user.subscribedEvents[i])
+            .then(event => {
+                events.push(event);
+            }).catch(() => {
+                res.status(400).send('An error occured');
+            }); 
+        }
+        return events;
+    }
+
+    await getEvents().then((events) => {
+        console.log(events)
+        res.status(200).json({
+            events: events
+        })
+    })
+
+    
+
+});
+
+
+
 // insert a new event
-router.post('/createevent', jwtMiddleWare, checkIfAdmin, (req, res) => {
+router.post('/createevent', jwtMiddleWare, (req, res) => {
     var event = new Event();
     event.name = req.body.name;
-    event.maxTickets = req.body.maxTickets;
-    event.ticketsSold = 0;
+    event.registeredUsers = 0;
+
     event.date = req.body.date;
     event.img_url = req.body.img_url;
     event.description = req.body.description;
@@ -45,7 +86,7 @@ router.post('/createevent', jwtMiddleWare, checkIfAdmin, (req, res) => {
         } else {
             res.status(200).send(doc);
         }
-    }); 
+    });
 });
 
 //update an event
@@ -58,39 +99,40 @@ router.post('/update', jwtMiddleWare, checkIfAdmin, (req, res) => {
 
 //make a user subscribe to an event (increment ticketsSold) 
 router.post('/subscribe', jwtMiddleWare, async (req, res) => {
-    console.log(req.body);
-    const {eventId} = req.body;
-    const event = await Event.findById(eventId);
-    const user = await getAppUserFromReq(req);
-    
-    for (let i = 0; i < user.subscribedEvents.length; i++) {
-        if (user.subscribedEvents[i]._id.equals(eventId)) {
-            return res.status(400).send('You are already subscribed to this event');
-        }
-    }
-    //check if the event is already sold out
-    if (event.ticketsSold >= event.maxTickets) {
-        return res.status(400).send('This event is sold out');
-    }
+    try {
+        console.log(req.body);
+        const { eventId } = req.body;
+        const event = await Event.findById(eventId);
+        const user = await getAppUserFromReq(req);
 
-    if (event.ticketsSold < event.maxTickets) {
-        event.ticketsSold++;
+        console.log(req.user)
+
+        for (let i = 0; i < user.subscribedEvents.length; i++) {
+            if (user.subscribedEvents[i]._id.equals(eventId)) {
+                return res.status(400).send('You are already registered to this event');
+            }
+        }
+
+
+        event.registeredUsers++;
         user.subscribedEvents.push(eventId);
         user.save((err, doc) => {
             if (err) return res.status(500).send('An error occured');
         });
-        event.save((err, doc) => { 
+        event.save((err, doc) => {
             if (err) return res.status(500).send('An error occured');
             else return res.status(200).send(doc);
         });
-    } else {
-        return res.status(400).send('Event is full');
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send('An error occured');
     }
 });
 
 //remove a user from an event (decrement ticketsSold)
 router.post('/unsubscribe', jwtMiddleWare, async (req, res) => {
-    const {eventId} = req.body;
+    const { eventId } = req.body;
     const event = await Event.findById(eventId);
     const user = await getAppUserFromReq(req);
 
@@ -109,14 +151,19 @@ router.post('/unsubscribe', jwtMiddleWare, async (req, res) => {
         return res.status(400).send('You are not subscribed to this event');
     }
 
-    if (event.ticketsSold > 0) {
-        event.ticketsSold--;
-        user.subscribedEvents.splice(user.subscribedEvents.indexOf(eventId), 1);
+    if (event.registeredUsers > 0) {
+        event.registeredUsers--;
+        for (let i = 0; i < user.subscribedEvents.length; i++) {
+            if (user.subscribedEvents[i]._id.equals(eventId)) {
+                user.subscribedEvents.splice(i, 1);
+                break;
+            }
+        }
         user.save((err, doc) => {
             if (err) res.status(500).send('An error occured');
         });
         event.save((err, doc) => {
-            if (err)  res.status(500).send('An error occured');
+            if (err) res.status(500).send('An error occured');
             else return res.status(200).send(doc);
         });
     } else {
