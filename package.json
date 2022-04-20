@@ -9,16 +9,6 @@
         "pretty": "npx prettier --write .",
         "start:dev": "nodemon src -L"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/RishithGandham/tsawebsitedesignbackend2022.git"
-    },
-    "author": "RishithG & Tanishq  Mittal",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/RishithGandham/tsawebsitedesignbackend2022/issues"
-    },
-    "homepage": "https://github.com/RishithGandham/tsawebsitedesignbackend2022#readme",
     "dependencies": {
         "@heroku-cli/command": "^8.5.0",
         "@oclif/command": "^1.8.16",
