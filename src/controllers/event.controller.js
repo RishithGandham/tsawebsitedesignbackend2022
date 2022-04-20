@@ -12,47 +12,53 @@ const jwtMiddleWare = require('../auth/checkjwt.middleware');
 const getAppUserFromReq = require('../auth/getappuser.middleware');
 
 // get all events
-router.get('/getAll',  async (req, res) => {
-    const events = await Event.find();
-    res.status(200).json({
-        events: events
-    });
+router.get('/getAll', async (req, res) => {
+    try {
+        const events = await Event.find();
+        res.status(200).json({
+            events: events
+        });
+    } catch (err) {
+        res.status(500).json({
+            message: err.message
+        });
+    }
 });
 
 
 //get an event by id
-router.post('/getById/', jwtMiddleWare, async (req, res) => {
+router.post('/getById/', async (req, res) => {
     let event;
     try {
         const eventFetch = await Event.findById(req.body.id)
-        .then(event1 => {
-            event = event1
-        }).catch((err) => {
-            res.status(400).send('Could not find event');
-            console.log('helloadfs')
-            throw err;
-        });
+            .then(event1 => {
+                event = event1
+            }).catch((err) => {
+                res.status(400).send('Could not find event');
+                console.log('helloadfs')
+                throw err;
+            });
         return res.status(200).send({
             event: event
         })
-    } catch(err) {
-       console.log(err)
+    } catch (err) {
+        console.log(err)
     }
-    
+
 });
 
 //return all events for a user with the actual data instead of the id
 router.get('/getAllForUser', jwtMiddleWare, async (req, res) => {
-    
+
     async function getEvents() {
         let events = [];
         for (let i = 0; i < req.user.subscribedEvents.length; i++) {
             const event = await Event.findById(req.user.subscribedEvents[i])
-            .then(event => {
-                events.push(event);
-            }).catch(() => {
-                res.status(400).send('An error occured');
-            }); 
+                .then(event => {
+                    events.push(event);
+                }).catch(() => {
+                    res.status(400).send('An error occured');
+                });
         }
         return events;
     }
@@ -64,7 +70,7 @@ router.get('/getAllForUser', jwtMiddleWare, async (req, res) => {
         })
     })
 
-    
+
 
 });
 
